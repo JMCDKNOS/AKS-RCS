@@ -1,0 +1,6 @@
+# Ignore certificate and key files
+certs/output/*
+*.crt
+*.key
+*.pfx
+*.pem

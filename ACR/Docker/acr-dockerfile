@@ -1,0 +1,12 @@
+# Build Docker image
+
+docker build -t myacr.azurecr.io/aks-rcs-dummy:aks-rcs-tag .
+
+## Log in to your Azure Container Registry
+
+az acr login --name myacr
+
+### Push the Docker image to ACR
+
+docker push myacr.azurecr.io/aks-rcs-dummy:aks-rcs-tag
+/Users/james/Desktop/James/Projects/AKS-RCS/Docker
