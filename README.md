@@ -23,9 +23,4 @@ Low Carbon Kubernetes Schedule/Heliotropic Scheduler.
 <https://ceur-ws.org/Vol-2382/ICT4S2019_paper_28.pdf>
 <https://devblogs.microsoft.com/sustainable-software/carbon-aware-kubernetes/>
 
-Marginal Operating Emissions Rate (MOER) is a value that represents the pounds of carbon emitted to create a megawatt of energy — the lower the MOER, the cleaner the energy. While a region may have a preferable CI value, the cost may be higher. If the MOER is lower, it saves on carbon emissions - but you may have to pay more £ to save on CI
 
-UK South offers D4as v4 machines at $0.222 per hour and North Europe at $0.214 per hour currently. However, the MOER values for the two are close at 965 lbs of CO2/megawatt for UK South and 1114 lbs of CO2/megawatt for North Europe. In this scenario, running machines in UK South will cost a little under 4% more but save 149 pounds(lbs) of carbon for each megawatt you consume.  
-
-App Gateway FAQ
-<https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-faq>
