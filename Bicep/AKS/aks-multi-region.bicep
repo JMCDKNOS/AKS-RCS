@@ -42,8 +42,9 @@ param roleDefId3 string
 param principalType string
 // Function App
 param appName string
-param scriptFileURL string
+param scriptFile string
 param storageAccountName string
+param containerName string 
 
 // Networking
 resource aksVnet1 'Microsoft.Network/virtualNetworks@2021-05-01' = {
@@ -119,7 +120,7 @@ resource aksCluster1 'Microsoft.ContainerService/managedClusters@2022-04-01' = {
   location: location1
   properties: {
     dnsPrefix: 'mydnsprefix'
-    kubernetesVersion: '1.25'
+    kubernetesVersion: '1.27'
     enableRBAC: true
     aadProfile: {
       managed: true
@@ -153,7 +154,7 @@ resource aksCluster2 'Microsoft.ContainerService/managedClusters@2022-04-01' = {
   location: location2
   properties: {
     dnsPrefix: 'mydnsprefix'
-    kubernetesVersion: '1.25'
+    kubernetesVersion: '1.27'
     enableRBAC: true
     aadProfile: {
       managed: true
@@ -514,14 +515,14 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01'
 }
 resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = {
   parent: blobService
-  name: guid('containerName')
+  name: containerName
   properties: {
     publicAccess: 'None'
   }
 }
 // Function App 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
-  name: appName
+  name: '${appName}-AppSericePlan'
   location: location1
   kind: 'FunctionApp'
   sku: {
@@ -530,7 +531,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   }
 }
 resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: appName
+  name: '${appName}-FunctionApp'
   location: location1
   kind: 'functionapp'
   properties: {
@@ -547,7 +548,7 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
         }
         {
           name: 'SCRIPT_URL'
-          value: scriptFileURL
+          value: scriptFile
         }
       ]
     }
@@ -558,7 +559,7 @@ resource function 'Microsoft.Web/sites/functions@2021-02-01' = {
   name: 'myFunction'
   properties: {
     config: {
-      scriptFile: scriptFileURL
+      scriptFile: scriptFile
       bindings: [
         {
           name: 'timerTrigger'

@@ -35,15 +35,15 @@ param publicIpAllocationMethod = 'Static'
 // param frontDoorRouteName = ''
 // RBAC
 @secure()
-param clientId = ''
+param clientId = 'dfb5963a-600d-43da-b61e-2109e1de97f2'
 @secure()
-param clientSecret = ''
+param clientSecret = 'ftn8Q~KxcNwGz1NzFtTP5dvxTchtcm2tOznxHcJj'
 param roleDefId = '/providers/Microsoft.Authorization/roleDefinitions/fd036e6b-1266-47a0-b0bb-a05d04831731'
 param roleDefId2 = '/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e'
 param roleDefId3 = '/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d'
 param principalType = 'ServicePrincipal'
 // Function App
 param appName = 'AKS-RCS-PS1'
-param scriptFileURL = 'https://{0}.blob.{1}/{2}/PS1.zip'
+param scriptFile = 'AKS-RCS/Scripts/PS1/run.ps1'
 param storageAccountName = 'aksrcssa'
-
+param containerName = 'jamesScriptContainer'
