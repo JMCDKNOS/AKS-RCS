@@ -43,7 +43,7 @@ param roleDefId2 = '/providers/Microsoft.Authorization/roleDefinitions/641177b8-
 param roleDefId3 = '/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d'
 param principalType = 'ServicePrincipal'
 // Function App
-param appName = 'AKS-RCS-PS1'
-param scriptFile = 'AKS-RCS/Scripts/PS1/run.ps1'
-param storageAccountName = 'aksrcssa'
-param containerName = 'jamesScriptContainer'
+param appName = 'AKS-RCS'
+param scriptFile = 'AKS-RCS/Scripts/PS1'
+// param storageAccountName = 'aksrcssa'
+// param containerName = 'jamesScriptContainer'

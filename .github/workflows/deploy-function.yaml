@@ -1,0 +1,21 @@
+# name: Azure Deployment
+
+# on:
+#   push:
+#     branches:
+#       - main  
+  
+  # deploy_function_app:
+  #   runs-on: ubuntu-latest
+  #   needs: deploy_module
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Deploy Code to Function App
+  #       run: |
+  #         az functionapp deployment source config-zip \
+  #         --resource-group rg-aks-rcs \
+  #         --name AKS-RCS-PS1 \
+  #         --src .AKS-RCS/Scripts/PS1
+  #         func azure functionapp publish AKS-RCS-FunctionApp --force

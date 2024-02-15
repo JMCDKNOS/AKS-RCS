@@ -1,29 +1,29 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-app-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: my-app
-  template:
-    metadata:
-      labels:
-        app: my-app
-    spec:
-      containers:
-        - name: my-app
-          image: myacr.azurecr.io/my-image:my-tag
-          ports:
-            - containerPort: 80
-          resources:
-            limits:
-              cpu: "0.5" # Maximum CPU limit (e.g., half a CPU core)
-              memory: "512Mi" # Maximum memory limit (e.g., 512 megabytes)
-            requests:
-              cpu: "0.1" # CPU request (minimum required)
-              memory: "256Mi" # Memory request (minimum required)
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: my-app-deployment
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: my-app
+#   template:
+#     metadata:
+#       labels:
+#         app: my-app
+#     spec:
+#       containers:
+#         - name: my-app
+#           image: myacr.azurecr.io/my-image:my-tag
+#           ports:
+#             - containerPort: 80
+#           resources:
+#             limits:
+#               cpu: "0.5" # Maximum CPU limit (e.g., half a CPU core)
+#               memory: "512Mi" # Maximum memory limit (e.g., 512 megabytes)
+#             requests:
+#               cpu: "0.1" # CPU request (minimum required)
+#               memory: "256Mi" # Memory request (minimum required)
 
-# kubectl config current-context
-# kubectl apply -f deployment.yaml
+# # kubectl config current-context
+# # kubectl apply -f deployment.yaml

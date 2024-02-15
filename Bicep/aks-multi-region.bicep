@@ -43,8 +43,8 @@ param principalType string
 // Function App
 param appName string
 param scriptFile string
-param storageAccountName string
-param containerName string 
+// param storageAccountName string
+// param containerName string 
 
 // Networking
 resource aksVnet1 'Microsoft.Network/virtualNetworks@2021-05-01' = {
@@ -501,25 +501,25 @@ resource appGateway2 'Microsoft.Network/applicationGateways@2021-02-01' = {
 //   }
 // }
 // Storage Account
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: storageAccountName
-  location: location1
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_LRS'
-  }
-}
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
-  parent: storageAccount
-  name: 'default'
-}
-resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = {
-  parent: blobService
-  name: containerName
-  properties: {
-    publicAccess: 'None'
-  }
-}
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+//   name: storageAccountName
+//   location: location1
+//   kind: 'StorageV2'
+//   sku: {
+//     name: 'Standard_LRS'
+//   }
+// }
+// resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
+//   parent: storageAccount
+//   name: 'default'
+// }
+// resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = {
+//   parent: blobService
+//   name: containerName
+//   properties: {
+//     publicAccess: 'None'
+//   }
+// }
 // Function App 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: '${appName}-AppSericePlan'
@@ -546,17 +546,13 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
           value: '0'
         }
-        {
-          name: 'SCRIPT_URL'
-          value: scriptFile
-        }
       ]
     }
   }
 }
 resource function 'Microsoft.Web/sites/functions@2021-02-01' = {
   parent: functionApp
-  name: 'myFunction'
+  name: '${appName}-Function'
   properties: {
     config: {
       scriptFile: scriptFile

@@ -42,9 +42,9 @@ param roleDefId3 string
 param principalType string
 // Function App
 param appName string
-param scriptFile string
-param storageAccountName string
-param containerName string
+// param scriptFile string
+// param storageAccountName string
+// param containerName string
 
 
 // Module
@@ -93,7 +93,7 @@ module aksmultiregion './aks-multi-region.bicep' = {
     // Function App
     appName: appName
     scriptFile: scriptFile
-    storageAccountName: storageAccountName
-    containerName: containerName
+    // storageAccountName: storageAccountName
+    // containerName: containerName
   }
 }
