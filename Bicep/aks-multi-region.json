@@ -1,0 +1,622 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "14455742306937664488"
+    }
+  },
+  "parameters": {
+    "location1": {
+      "type": "string"
+    },
+    "location2": {
+      "type": "string"
+    },
+    "vnet1": {
+      "type": "string"
+    },
+    "subnet1": {
+      "type": "string"
+    },
+    "vnet2": {
+      "type": "string"
+    },
+    "subnet2": {
+      "type": "string"
+    },
+    "cluster1": {
+      "type": "string"
+    },
+    "cluster2": {
+      "type": "string"
+    },
+    "aksNodeCount": {
+      "type": "int"
+    },
+    "aksNodeSize": {
+      "type": "string"
+    },
+    "acrName": {
+      "type": "string"
+    },
+    "aksClusterFQDN1": {
+      "type": "string"
+    },
+    "aksClusterFQDN2": {
+      "type": "string"
+    },
+    "appGatewayName1": {
+      "type": "string"
+    },
+    "appGWVnetName1": {
+      "type": "string"
+    },
+    "appGWSubName1": {
+      "type": "string"
+    },
+    "appGatewayName2": {
+      "type": "string"
+    },
+    "appGWVnetName2": {
+      "type": "string"
+    },
+    "appGWSubName2": {
+      "type": "string"
+    },
+    "publicIpName1": {
+      "type": "string"
+    },
+    "publicIpName2": {
+      "type": "string"
+    },
+    "publicIpAllocationMethod": {
+      "type": "string"
+    },
+    "clientId": {
+      "type": "securestring"
+    },
+    "clientSecret": {
+      "type": "securestring"
+    },
+    "roleDefId": {
+      "type": "string"
+    },
+    "roleDefId2": {
+      "type": "string"
+    },
+    "roleDefId3": {
+      "type": "string"
+    },
+    "principalType": {
+      "type": "string"
+    },
+    "appName": {
+      "type": "string"
+    },
+    "scriptFile": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('vnet1')]",
+      "location": "[parameters('location1')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.1.0.0/16"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-05-01",
+      "name": "[format('{0}/{1}', parameters('vnet1'), parameters('subnet1'))]",
+      "properties": {
+        "addressPrefix": "10.1.1.0/24"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet1'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('vnet2')]",
+      "location": "[parameters('location2')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-05-01",
+      "name": "[format('{0}/{1}', parameters('vnet2'), parameters('subnet2'))]",
+      "properties": {
+        "addressPrefix": "10.2.1.0/24"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet2'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('appGWVnetName1')]",
+      "location": "[parameters('location1')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-05-01",
+      "name": "[format('{0}/{1}', parameters('appGWVnetName1'), parameters('appGWSubName1'))]",
+      "properties": {
+        "addressPrefix": "10.2.1.0/24"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('appGWVnetName1'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2021-05-01",
+      "name": "[parameters('appGWVnetName2')]",
+      "location": "[parameters('location2')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.2.0.0/16"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2021-05-01",
+      "name": "[format('{0}/{1}', parameters('appGWVnetName2'), parameters('appGWSubName2'))]",
+      "properties": {
+        "addressPrefix": "10.2.1.0/24"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('appGWVnetName2'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-04-01",
+      "name": "[parameters('cluster1')]",
+      "location": "[parameters('location1')]",
+      "properties": {
+        "dnsPrefix": "mydnsprefix",
+        "kubernetesVersion": "1.27",
+        "enableRBAC": true,
+        "aadProfile": {
+          "managed": true,
+          "enableAzureRBAC": true
+        },
+        "servicePrincipalProfile": {
+          "clientId": "[parameters('clientId')]",
+          "secret": "[parameters('clientSecret')]"
+        },
+        "agentPoolProfiles": [
+          {
+            "name": "nodepool1",
+            "count": "[parameters('aksNodeCount')]",
+            "vmSize": "[parameters('aksNodeSize')]",
+            "mode": "System"
+          }
+        ],
+        "networkProfile": {
+          "networkPlugin": "azure",
+          "podCidr": "10.244.0.0/16",
+          "serviceCidr": "10.0.0.0/16",
+          "dockerBridgeCidr": "172.17.0.1/16"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet1'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-04-01",
+      "name": "[parameters('cluster2')]",
+      "location": "[parameters('location2')]",
+      "properties": {
+        "dnsPrefix": "mydnsprefix",
+        "kubernetesVersion": "1.27",
+        "enableRBAC": true,
+        "aadProfile": {
+          "managed": true,
+          "enableAzureRBAC": true
+        },
+        "servicePrincipalProfile": {
+          "clientId": "[parameters('clientId')]",
+          "secret": "[parameters('clientSecret')]"
+        },
+        "agentPoolProfiles": [
+          {
+            "name": "nodepool2",
+            "count": "[parameters('aksNodeCount')]",
+            "vmSize": "[parameters('aksNodeSize')]",
+            "mode": "System"
+          }
+        ],
+        "networkProfile": {
+          "networkPlugin": "azure",
+          "podCidr": "10.245.0.0/16",
+          "serviceCidr": "10.0.0.0/16",
+          "dockerBridgeCidr": "172.18.0.1/16"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet2'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2022-02-01-preview",
+      "name": "[parameters('acrName')]",
+      "location": "[parameters('location1')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "adminUserEnabled": true
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid('AKSClusterAdminAssignment')]",
+      "properties": {
+        "principalId": "[parameters('clientId')]",
+        "principalType": "[parameters('principalType')]",
+        "roleDefinitionId": "[parameters('roleDefId')]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid('AppAssignment')]",
+      "properties": {
+        "principalId": "[parameters('clientId')]",
+        "principalType": "[parameters('principalType')]",
+        "roleDefinitionId": "[parameters('roleDefId2')]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid('acrPullAssignment')]",
+      "properties": {
+        "principalId": "[parameters('clientId')]",
+        "principalType": "[parameters('principalType')]",
+        "roleDefinitionId": "[parameters('roleDefId3')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('publicIpName1')]",
+      "location": "[parameters('location1')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[parameters('publicIpAllocationMethod')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/applicationGateways",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('appGatewayName1')]",
+      "location": "[parameters('location1')]",
+      "properties": {
+        "sku": {
+          "capacity": 2,
+          "name": "Standard_v2",
+          "tier": "Standard_v2"
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "AKS-AppGW1-IpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('appGWVnetName1'), parameters('appGWSubName1'))]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "AppGW-FeIP1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName1'))]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "AppGW-FePort1",
+            "properties": {
+              "port": 80
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "backendPool",
+            "properties": {
+              "backendAddresses": [
+                {
+                  "fqdn": "[parameters('aksClusterFQDN1')]"
+                },
+                {
+                  "fqdn": "[parameters('aksClusterFQDN2')]"
+                }
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "backendHttpSettings",
+            "properties": {
+              "port": 8080
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "httpListener",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', parameters('appGatewayName1'), 'AppGW-FeIP1')]"
+              },
+              "frontendPort": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', parameters('appGatewayName1'), 'AppGW-FePort1')]"
+              }
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "name": "routingRule",
+            "properties": {
+              "ruleType": "Basic",
+              "httpListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', parameters('appGatewayName1'), 'httpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendAddressPools', parameters('appGatewayName1'), 'backendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', parameters('appGatewayName1'), 'backendHttpSettings')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet1'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('publicIpName2')]",
+      "location": "[parameters('location2')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[parameters('publicIpAllocationMethod')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/applicationGateways",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('appGatewayName2')]",
+      "location": "[parameters('location2')]",
+      "properties": {
+        "sku": {
+          "capacity": 2,
+          "name": "Standard_v2",
+          "tier": "Standard_v2"
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "AKS-AppGW-IpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('appGWVnetName2'), parameters('appGWSubName2'))]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "AppGW-FeIP2",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName2'))]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "AppGW-FePort2",
+            "properties": {
+              "port": 80
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "backendPool",
+            "properties": {
+              "backendAddresses": [
+                {
+                  "fqdn": "[parameters('aksClusterFQDN1')]"
+                },
+                {
+                  "fqdn": "[parameters('aksClusterFQDN2')]"
+                }
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "backendHttpSettings",
+            "properties": {
+              "port": 8080
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "httpListener",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', parameters('appGatewayName2'), 'AppGW-FeIP2')]"
+              },
+              "frontendPort": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', parameters('appGatewayName2'), 'AppGW-FePort2')]"
+              }
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "name": "routingRule",
+            "properties": {
+              "ruleType": "Basic",
+              "httpListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', parameters('appGatewayName2'), 'httpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendAddressPools', parameters('appGatewayName2'), 'backendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', parameters('appGatewayName2'), 'backendHttpSettings')]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet2'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}-AppSericePlan', parameters('appName'))]",
+      "location": "[parameters('location1')]",
+      "kind": "functionapp",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('{0}-AppInsights', parameters('appName'))]",
+      "location": "[parameters('location1')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}-FunctionApp', parameters('appName'))]",
+      "location": "[parameters('location1')]",
+      "kind": "functionapp",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-AppSericePlan', parameters('appName')))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "powershell"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[format('{0}{1}', 'InstrumentationKey=', reference(resourceId('Microsoft.Insights/components', format('{0}-AppInsights', parameters('appName'))), '2020-02-02').InstrumentationKey)]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', format('{0}-AppSericePlan', parameters('appName')))]",
+        "[resourceId('Microsoft.Insights/components', format('{0}-AppInsights', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/functions",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}/{1}', format('{0}-FunctionApp', parameters('appName')), format('{0}-Function', parameters('appName')))]",
+      "properties": {
+        "config": {
+          "scriptFile": "[parameters('scriptFile')]",
+          "bindings": [
+            {
+              "name": "timerTrigger",
+              "type": "timerTrigger",
+              "direction": "in",
+              "schedule": "*/10 * * * *"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('{0}-FunctionApp', parameters('appName')))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "applicationInsightsConnectionString": {
+      "type": "object",
+      "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-AppInsights', parameters('appName'))), '2020-02-02')]"
+    }
+  }
+}

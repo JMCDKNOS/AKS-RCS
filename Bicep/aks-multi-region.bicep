@@ -565,10 +565,11 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: '[concat('InstrumentationKey=', output.applicationInsightsConnectionString.InstrumentationKey, ';IngestionEndpoint=', output.applicationInsightsConnectionString.IngestionEndpoint, ';LiveEndpoint=', output.applicationInsightsConnectionString.LiveEndpoint)]'        }
+          value: '${'InstrumentationKey='}${azAppInsights.properties.InstrumentationKey}'
+        }
       ]
+      }
     }
-  }
 }
 resource function 'Microsoft.Web/sites/functions@2021-02-01' = {
   parent: functionApp
