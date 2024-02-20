@@ -1,7 +1,5 @@
 # AKS-RCS
 
-This is a work in progress
-
 The repo contains a Bicep module that deploys 2 AKS Clusters and prerequesite resources. A sample workload (Docker image, pushed to ACR) is then deployed into the Clusters in 2 seperate regions. (uksouth & northeurope)
 
 Each cluster has an Application Gateway and Public IP ingress. There is the addition of a Globally redundant LB (FrontDoor) for directing traffic to either of the 2 App Gateways.
@@ -14,10 +12,22 @@ Get-PreferredLocation.ps1 will querry the "National Grid ESO - Carbon Intensity 
 
 The deployment is run via Github Actions.
 
+This repo is a work in progress - Function App & FrontDoor components need finalized and tested.
+
 ## Notes
 
 AKS (Azure Container Service) -  is only currently offered in UK South and you are also unable to scale down to zero pods. The KEDA project builds on top of HPA and adds support for scale to zero. So workloads can be stopped when the carbon intensity is too high.
 <https://github.com/Azure/carbon-aware-keda-operator>
+
+### Deploy manually from VS*
+
+- az deployment group create --resource-group AKS-RCS --template-file main.bicep --parameters main.bicepparam
+
+### When Bicep infrastructure is deployed. Publish Function App
+
+- cd Scripts/PS1
+
+- func azure functionapp publish AKS-RCS-FunctionApp --force
 
 ### Further reading
 

@@ -57,8 +57,8 @@ resource aksVnet1 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 resource aksSubnet1 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  name: subnet1
   parent: aksVnet1
+  name: subnet1
   properties: {
     addressPrefix: '10.1.1.0/24'
   }
@@ -73,8 +73,8 @@ resource aksVnet2 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 resource aksSubnet2 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  name: subnet2
   parent: aksVnet2
+  name: subnet2
   properties: {
     addressPrefix: '10.2.1.0/24'
   }
@@ -89,8 +89,8 @@ resource appGWVnet1 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 resource appGWSub1 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  name: appGWSubName1
   parent: appGWVnet1
+  name: appGWSubName1
   properties: {
     addressPrefix: '10.2.1.0/24'
   }
@@ -105,8 +105,8 @@ resource appGWVnet2 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 resource appGWSub2 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  name: appGWSubName2
   parent: appGWVnet2
+  name: appGWSubName2
   properties: {
     addressPrefix: '10.2.1.0/24'
   }
@@ -524,12 +524,25 @@ resource appGateway2 'Microsoft.Network/applicationGateways@2021-02-01' = {
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: '${appName}-AppSericePlan'
   location: location1
-  kind: 'FunctionApp'
+  kind: 'functionapp'
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
   }
 }
+// AppInsights 
+resource azAppInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: '${appName}-AppInsights'
+  location: location1
+  kind: 'web'
+  properties:{
+    Application_Type: 'web'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
+}
+output applicationInsightsConnectionString object = azAppInsights.properties
+
 resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
   name: '${appName}-FunctionApp'
   location: location1
@@ -543,9 +556,16 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
           value: 'powershell'
         }
         {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '0'
+          name: 'FUNCTIONS_EXTENSION_VERSION'
+          value: '~4'
         }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1' // Indicates that the function app runs from a local package file deployed in the d:\home\data\SitePackages (Windows) or /home/data/SitePackages (Linux) folder of your function app.
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: '[concat('InstrumentationKey=', output.applicationInsightsConnectionString.InstrumentationKey, ';IngestionEndpoint=', output.applicationInsightsConnectionString.IngestionEndpoint, ';LiveEndpoint=', output.applicationInsightsConnectionString.LiveEndpoint)]'        }
       ]
     }
   }
@@ -561,20 +581,10 @@ resource function 'Microsoft.Web/sites/functions@2021-02-01' = {
           name: 'timerTrigger'
           type: 'timerTrigger'
           direction: 'in'
-          schedule: '0 */60 * * * *' // Cron expression for every 60 minutes, adjust as needed
+          schedule: '*/10 * * * *' // Cron expression for every 10 minutes, adjust as needed
         }
       ]
     }
   }
 }
-// AppInsights 
-resource azAppInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: '${appName}-AppInsights'
-  location: location1
-  kind: 'web'
-  properties:{
-    Application_Type: 'web'
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-  }
-}
+

@@ -42,7 +42,7 @@ param roleDefId3 string
 param principalType string
 // Function App
 param appName string
-// param scriptFile string
+param scriptFile string
 // param storageAccountName string
 // param containerName string
 

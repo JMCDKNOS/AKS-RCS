@@ -13,7 +13,7 @@ param cluster1 = 'AKS-Cluster-01'
 param cluster2 = 'AKS-Cluster-02'
 param aksNodeCount = 1
 param aksNodeSize = 'Standard_D2s_v3'
-param acrName = 'acraksworkload'
+param acrName = 'azaksrcscontainerreg'
 param aksClusterFQDN1 = 'aks-cluster1-region1'
 param aksClusterFQDN2 = 'aks-cluster1-region2'
 // App Gateways
@@ -44,6 +44,6 @@ param roleDefId3 = '/providers/Microsoft.Authorization/roleDefinitions/7f951dda-
 param principalType = 'ServicePrincipal'
 // Function App
 param appName = 'AKS-RCS'
-param scriptFile = 'AKS-RCS/Scripts/PS1'
+param scriptFile = 'AKS-RCS/Scripts/PS1/run.ps1'
 // param storageAccountName = 'aksrcssa'
 // param containerName = 'jamesScriptContainer'
